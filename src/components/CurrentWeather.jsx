@@ -1,4 +1,4 @@
-import { describeWeather } from "../utils/weatherCodes";
+import { describeWeather } from "../utils/WeatherCodes";
 import { formTemp } from "../utils/Format";
 
 function CurrentWeather({ place, current, unit }) {

@@ -1,4 +1,4 @@
-import { describeWeather } from "../utils/weatherCodes";
+import { describeWeather } from "../utils/WeatherCodes";
 import { formTemp, formatDay } from "../utils/Format";
 
 function ForecastList({ days, unit }) {
