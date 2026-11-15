@@ -176,11 +176,7 @@ button:disabled {
 .day__temps {
   text-align: right;
 }
-.debug {
-  margin: 0;
-  overflow-x: auto;
-  font-size: 0.8rem;
-}
+
 .units {
   display: flex;
   justify-content: center;
