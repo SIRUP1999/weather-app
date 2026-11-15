@@ -1,27 +1,56 @@
+import { useState } from "react";
+import CurrentWeather from "./components/CurrentWeather";
+import ForecastList from "./components/ForecastList";
+import { useWeather } from "./hooks/useWeather";
+import { UseLocalStorage } from "./hooks/UseLocalStorage";
 import "./App.css";
-import { useEffect } from "react";
-import { fetchWeather } from "./services/WeatherApi";
 
-// TEMPORARY TEST: delete after checking
+const UNITS = ["C", "F"];
 
 function App() {
-  const status = "success";
-  useEffect(() => {
-    fetchWeather({ city: "Accra" }).then(console.log).catch(console.error);
-  }, []);
+  const [city, setCity] = useState("");
+  const [unit, setUnit] = UseLocalStorage("weather-unit", "C");
+  const { data, status, search, retry } = useWeather();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    search(city);
+  }
+
   return (
     <main className="app">
       <h1 className="title">Weather</h1>
 
-      <form className="search" role="search">
+      <form className="search" role="search" onSubmit={handleSubmit}>
         <label htmlFor="city" className="visually-hidden">
           City name
         </label>
-        <input id="city" type="search" placeholder="Search for a city..." />
-        <button type="submit">Search</button>
+        <input
+          id="city"
+          type="search"
+          placeholder="Search for a city..."
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+        />
+        <button type="submit" disabled={!city.trim() || status === "loading"}>
+          Search
+        </button>
       </form>
 
-      <section className="panel" aria-label="polite">
+      <div className="units" role="group" aria-label="Temperature unit">
+        {UNITS.map((u) => (
+          <button
+            key={u}
+            className={unit === u ? "active" : ""}
+            aria-pressed={unit === u}
+            onClick={() => setUnit(u)}
+          >
+            °{u}
+          </button>
+        ))}
+      </div>
+
+      <section className="panel" aria-live="polite">
         {status === "idle" && (
           <p className="message">Search for a city to see its weather.</p>
         )}
@@ -30,62 +59,25 @@ function App() {
 
         {status === "notfound" && (
           <p className="message">
-            We couldn't find the city.Check the spelling and try again.
+            We couldn't find that city. Check the spelling and try again.
           </p>
         )}
 
         {status === "error" && (
           <div className="message">
-            <p className="message">
-              Something went wrong.Check your spelling and try again.
-            </p>
-            <button>Try again</button>
+            <p>Something went wrong. Check your connection and try again.</p>
+            <button onClick={retry}>Try again</button>
           </div>
         )}
 
-        {status === "success" && (
+        {status === "success" && data && (
           <>
-            <div className="current">
-              <h2 className="place"> Accra, Greater Accra, Ghana</h2>
-              <p className="icon" role="img" aria-label="Partly cloudy">
-                ⛅
-              </p>
-              <p className="temp">29°C</p>
-              <p className="condition">Partly cloudy</p>
-
-              <dl className="details">
-                <div>
-                  <dt>Feels like</dt>
-                  <dd>32°C</dd>
-                </div>
-                <div>
-                  <dt>Humidity</dt>
-                  <dd>74%</dd>
-                </div>
-                <div>
-                  <dt>Wind</dt>
-                  <dd>14 km/h</dd>
-                </div>
-              </dl>
-            </div>
-
-            <h3>5-day forecast</h3>
-            <ul className="forecast">
-              <li className="day">
-                <span>Today</span>
-                <span role="img" aria-label="Partly cloudy">
-                  ⛅
-                </span>
-                <span className="day__temps">31° / 24°</span>
-              </li>
-              <li className="day">
-                <span>Sat</span>
-                <span role="img" aria-label="Rain">
-                  🌧️
-                </span>
-                <span className="day__temps">30° / 23°</span>
-              </li>
-            </ul>
+            <CurrentWeather
+              place={data.place}
+              current={data.current}
+              unit={unit}
+            />
+            <ForecastList days={data.daily} unit={unit} />
           </>
         )}
       </section>

@@ -176,3 +176,34 @@ button:disabled {
 .day__temps {
   text-align: right;
 }
+.debug {
+  margin: 0;
+  overflow-x: auto;
+  font-size: 0.8rem;
+}
+.units {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.units button {
+  padding: 0.4rem 1rem;
+  color: var(--accent);
+  background: var(--surface);
+  border: 2px solid var(--accent);
+}
+
+.units button:hover {
+  background: var(--accent-soft);
+}
+
+.units button.active {
+  color: #fff;
+  background: var(--accent);
+}
+
+.current + section {
+  margin-top: 1.5rem;
+}
