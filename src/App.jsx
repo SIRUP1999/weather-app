@@ -2,14 +2,14 @@ import { useState } from "react";
 import CurrentWeather from "./components/CurrentWeather";
 import ForecastList from "./components/ForecastList";
 import { useWeather } from "./hooks/useWeather";
-import { UseLocalStorage } from "./hooks/UseLocalStorage";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 import "./App.css";
 
 const UNITS = ["C", "F"];
 
 function App() {
   const [city, setCity] = useState("");
-  const [unit, setUnit] = UseLocalStorage("weather-unit", "C");
+  const [unit, setUnit] = useLocalStorage("weather-unit", "C");
   const { data, status, search, retry } = useWeather();
 
   function handleSubmit(e) {
